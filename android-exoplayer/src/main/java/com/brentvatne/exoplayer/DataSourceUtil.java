@@ -12,11 +12,16 @@ import com.google.android.exoplayer2.upstream.DataSource;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory;
+import com.google.android.exoplayer2.upstream.cache.LeastRecentlyUsedCacheEvictor;
+import com.google.android.exoplayer2.upstream.cache.SimpleCache;
 import com.google.android.exoplayer2.util.Util;
 
 import okhttp3.Cookie;
 import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
+
+import java.io.File;
 import java.util.Map;
 
 
@@ -28,6 +33,9 @@ public class DataSourceUtil {
     private static DataSource.Factory rawDataSourceFactory = null;
     private static DataSource.Factory defaultDataSourceFactory = null;
     private static String userAgent = null;
+    private static SimpleCache mSimpleCache = null;
+    private static String CACHE_DIRECTORY_NAME = "MynExoplayerCache";
+    private static int MAX_CACHE_SIZE = 100 * 1024 * 1024;
 
     public static void setUserAgent(String userAgent) {
         DataSourceUtil.userAgent = userAgent;
@@ -68,8 +76,9 @@ public class DataSourceUtil {
     }
 
     private static DataSource.Factory buildDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
-        return new DefaultDataSourceFactory(context, bandwidthMeter,
+        CacheDataSourceFactory cacheDataSourceFactory = new CacheDataSourceFactory(getSimpleCache(context),
                 buildHttpDataSourceFactory(context, bandwidthMeter, requestHeaders));
+        return new DefaultDataSourceFactory(context, bandwidthMeter,cacheDataSourceFactory);
     }
 
     private static HttpDataSource.Factory buildHttpDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
@@ -83,5 +92,12 @@ public class DataSourceUtil {
             okHttpDataSourceFactory.getDefaultRequestProperties().set(requestHeaders);
 
         return okHttpDataSourceFactory;
+    }
+
+    private static synchronized SimpleCache getSimpleCache(ReactContext context) {
+        if (mSimpleCache == null) {
+            mSimpleCache = new SimpleCache(new File(context.getCacheDir(), CACHE_DIRECTORY_NAME), new LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE));
+        }
+        return mSimpleCache;
     }
 }
