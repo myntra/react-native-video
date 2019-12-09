@@ -76,7 +76,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 @SuppressLint("ViewConstructor")
-public class ReactExoplayerView extends FrameLayout implements
+class ReactExoplayerView extends FrameLayout implements
         LifecycleEventListener,
         ExoPlayer.EventListener,
         BandwidthMeter.EventListener,

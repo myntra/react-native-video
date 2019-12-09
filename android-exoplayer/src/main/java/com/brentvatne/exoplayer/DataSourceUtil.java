@@ -41,7 +41,7 @@ public class DataSourceUtil {
         DataSourceUtil.userAgent = userAgent;
     }
 
-    public static String getUserAgent(ReactContext context) {
+    public static String getUserAgent(Context context) {
         if (userAgent == null) {
             userAgent = Util.getUserAgent(context, "ReactNativeVideo");
         }
@@ -60,7 +60,7 @@ public class DataSourceUtil {
     }
 
 
-    public static DataSource.Factory getDefaultDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
+    public static DataSource.Factory getDefaultDataSourceFactory(Context context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
         if (defaultDataSourceFactory == null || (requestHeaders != null && !requestHeaders.isEmpty())) {
             defaultDataSourceFactory = buildDataSourceFactory(context, bandwidthMeter, requestHeaders);
         }
@@ -75,17 +75,19 @@ public class DataSourceUtil {
         return new RawResourceDataSourceFactory(context.getApplicationContext());
     }
 
-    private static DataSource.Factory buildDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
+    private static DataSource.Factory buildDataSourceFactory(Context context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
         CacheDataSourceFactory cacheDataSourceFactory = new CacheDataSourceFactory(getSimpleCache(context),
                 buildHttpDataSourceFactory(context, bandwidthMeter, requestHeaders));
         return new DefaultDataSourceFactory(context, bandwidthMeter,cacheDataSourceFactory);
     }
 
-    private static HttpDataSource.Factory buildHttpDataSourceFactory(ReactContext context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
+    private static HttpDataSource.Factory buildHttpDataSourceFactory(Context context, DefaultBandwidthMeter bandwidthMeter, Map<String, String> requestHeaders) {
         OkHttpClient client = OkHttpClientProvider.getOkHttpClient();
-        CookieJarContainer container = (CookieJarContainer) client.cookieJar();
-        ForwardingCookieHandler handler = new ForwardingCookieHandler(context);
-        container.setCookieJar(new JavaNetCookieJar(handler));
+        if (context instanceof ReactContext) {
+            CookieJarContainer container = (CookieJarContainer) client.cookieJar();
+            ForwardingCookieHandler handler = new ForwardingCookieHandler((ReactContext)context);
+            container.setCookieJar(new JavaNetCookieJar(handler));
+        }
         OkHttpDataSourceFactory okHttpDataSourceFactory = new OkHttpDataSourceFactory(client, getUserAgent(context), bandwidthMeter);
 
         if (requestHeaders != null)
@@ -94,7 +96,7 @@ public class DataSourceUtil {
         return okHttpDataSourceFactory;
     }
 
-    private static synchronized SimpleCache getSimpleCache(ReactContext context) {
+    private static synchronized SimpleCache getSimpleCache(Context context) {
         if (mSimpleCache == null) {
             mSimpleCache = new SimpleCache(new File(context.getCacheDir(), CACHE_DIRECTORY_NAME), new LeastRecentlyUsedCacheEvictor(MAX_CACHE_SIZE));
         }
