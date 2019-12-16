@@ -183,7 +183,6 @@ class ReactExoplayerView extends FrameLayout implements
         audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
         themedReactContext.addLifecycleEventListener(this);
         audioBecomingNoisyReceiver = new AudioBecomingNoisyReceiver(themedReactContext);
-
         initializePlayer();
     }
 
@@ -230,6 +229,7 @@ class ReactExoplayerView extends FrameLayout implements
     @Override
     public void onHostResume() {
         if (!playInBackground || !isInBackground) {
+            startPlayback();
             setPlayWhenReady(!isPaused);
         }
         isInBackground = false;
@@ -241,6 +241,7 @@ class ReactExoplayerView extends FrameLayout implements
         if (playInBackground) {
             return;
         }
+        stopPlayback();
         setPlayWhenReady(false);
     }
 
@@ -251,6 +252,7 @@ class ReactExoplayerView extends FrameLayout implements
 
     public void cleanUpResources() {
         stopPlayback();
+        themedReactContext.removeLifecycleEventListener(this);
     }
 
     //BandwidthMeter.EventListener implementation
@@ -458,7 +460,6 @@ class ReactExoplayerView extends FrameLayout implements
             player = null;
         }
         progressHandler.removeMessages(SHOW_PROGRESS);
-        themedReactContext.removeLifecycleEventListener(this);
         audioBecomingNoisyReceiver.removeListener();
         BANDWIDTH_METER.removeEventListener(this);
     }
@@ -498,7 +499,7 @@ class ReactExoplayerView extends FrameLayout implements
                 case ExoPlayer.STATE_BUFFERING:
                 case ExoPlayer.STATE_READY:
                     if (!player.getPlayWhenReady()) {
-                        setPlayWhenReady(true);
+                        setPlayWhenReady(!isPaused);
                     }
                     break;
                 default:

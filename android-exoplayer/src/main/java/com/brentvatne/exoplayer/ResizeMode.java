@@ -6,7 +6,7 @@ import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-class ResizeMode {
+public class ResizeMode {
 
     /**
      * Either the width or height is decreased to obtain the desired aspect ratio.
