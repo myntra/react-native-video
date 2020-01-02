@@ -199,8 +199,8 @@ public class ReactExoplayerViewManager extends ViewGroupManager<ReactExoplayerVi
     }
 
     @ReactProp(name = PROP_STOP, defaultBoolean = false)
-    public void setStop(final ReactExoplayerView videoView, final boolean paused) {
-        videoView.setStopModifier(paused);
+    public void setStop(final ReactExoplayerView videoView, final boolean stop) {
+        videoView.setStopModifier(stop);
     }
 
     @ReactProp(name = PROP_MUTED, defaultBoolean = false)

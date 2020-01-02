@@ -35,7 +35,7 @@ public class DataSourceUtil {
     private static String userAgent = null;
     private static SimpleCache mSimpleCache = null;
     private static String CACHE_DIRECTORY_NAME = "MynExoplayerCache";
-    private static int MAX_CACHE_SIZE = 100 * 1024 * 1024;
+    private static int MAX_CACHE_SIZE = 40 * 1024 * 1024;
 
     public static void setUserAgent(String userAgent) {
         DataSourceUtil.userAgent = userAgent;
