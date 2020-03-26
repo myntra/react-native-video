@@ -890,8 +890,6 @@ static int const RCTVideoUnset = -1;
     _stop = stop;
 }
 
-
-
 - (float)getCurrentTime
 {
   return _playerItem != NULL ? CMTimeGetSeconds(_playerItem.currentTime) : 0;
