@@ -56,6 +56,7 @@ static int const RCTVideoUnset = -1;
 
   BOOL _muted;
   BOOL _paused;
+  BOOL _stop;
   BOOL _repeat;
   BOOL _allowsExternalPlayback;
   NSArray * _textTracks;
@@ -855,6 +856,9 @@ static int const RCTVideoUnset = -1;
 
 - (void)setPaused:(BOOL)paused
 {
+  if (_stop) {
+    return;
+  }
   if (paused) {
     [_player pause];
     [_player setRate:0.0];
@@ -870,6 +874,23 @@ static int const RCTVideoUnset = -1;
   
   _paused = paused;
 }
+
+- (void)setStop:(BOOL)stop
+{
+    if (stop) {
+        [_player pause];
+        [_player setRate:0.0];
+        [_playerLayer setPlayer:nil];
+        [_playerViewController setPlayer:nil];
+    } else {
+        [self applyModifiers];
+        [_playerLayer setPlayer:_player];
+        [_playerViewController setPlayer:_player];
+    }
+    _stop = stop;
+}
+
+
 
 - (float)getCurrentTime
 {
