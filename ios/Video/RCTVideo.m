@@ -59,7 +59,6 @@ static int const RCTVideoUnset = -1;
   BOOL _stop;
   BOOL _repeat;
   BOOL _allowsExternalPlayback;
-  BOOL _disableAudioFocus;
   NSArray * _textTracks;
   NSDictionary * _selectedTextTrack;
   NSDictionary * _selectedAudioTrack;
