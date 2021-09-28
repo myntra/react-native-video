@@ -106,7 +106,6 @@ static int const RCTVideoUnset = -1;
     _playerBufferEmpty = YES;
     _playInBackground = false;
     _allowsExternalPlayback = YES;
-    _disableAudioFocus = NO;
     _playWhenInactive = false;
     _pictureInPicture = false;
     _ignoreSilentSwitch = @"inherit"; // inherit, ignore, obey
@@ -904,11 +903,11 @@ static int const RCTVideoUnset = -1;
         [_player setRate:0.0];
         [_playerLayer setPlayer:nil];
         [_playerViewController setPlayer:nil];
-  } else {
+    } else {
         [self applyModifiers];
         [_playerLayer setPlayer:_player];
         [_playerViewController setPlayer:_player];
-  }
+    }
     _stop = stop;
 }
 
