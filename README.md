@@ -405,12 +405,12 @@ For Android MediaPlayer, you will need to build your own controls or use a packa
 
 Platforms: Android ExoPlayer, iOS, react-native-dom
 
-#### disableFocus
+#### disableAudioFocus
 Determines whether video audio should override background music/audio in Android devices.
 * ** false (default)** - Override background audio/music
 * **true** - Let background audio/music from other apps play
 
-Platforms: Android Exoplayer
+Platforms: Android Exoplayer and iOS
 
 #### filter
 Add video filter
