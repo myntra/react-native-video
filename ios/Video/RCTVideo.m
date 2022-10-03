@@ -805,7 +805,7 @@ static int const RCTVideoUnset = -1;
 {
   _disableAudioFocus = disableAudioFocus;
   if(_disableAudioFocus) {
-    [self setAudioCategory:AVAudioSessionCategoryAmbient withOption:AVAudioSessionCategoryOptionMixWithOthers];
+    [self setAudioCategory:AVAudioSessionCategoryPlayback withOption:AVAudioSessionCategoryOptionMixWithOthers];
   }else {
     [self setAudioCategory:AVAudioSessionCategorySoloAmbient withOption:-1];
   }
